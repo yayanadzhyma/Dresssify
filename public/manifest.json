@@ -1,0 +1,20 @@
+{
+  "name": "Dressify - AI Stylist",
+  "short_name": "Dressify",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f5f0",
+  "theme_color": "#5A5A40",
+  "icons": [
+    {
+      "src": "/D.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/D.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
