@@ -12,7 +12,7 @@ if (process.env.GEMINI_API_KEY) {
 
 export const scanClothingItem = async (base64Image: string): Promise<Partial<ClothingItem>> => {
   const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash",
+    model: "gemini-2.5-flash-lite",
     contents: [
       {
         parts: [
@@ -85,7 +85,7 @@ export const getWeather = async (location: string): Promise<{ temp: string; cond
   try {
     return await withRetry(async () => {
       const response = await ai.models.generateContent({
-        model: "gemini-1.5-flash",
+        model: "gemini-2.5-flash-lite",
         contents: `Get the current weather for ${location} based on Google Weather information. Return a JSON object with: temp (e.g. "18°C"), condition (e.g. "Sunny"), note (a short stylist note like "Perfect for light layers").`,
         config: {
           tools: [{ googleSearch: {} }],
@@ -120,7 +120,7 @@ export const suggestOutfits = async (
   try {
     return await withRetry(async () => {
       const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
+        model: "gemini-2.5-flash-lite",
         contents: `Based on this wardrobe: ${wardrobeSummary}. 
         User Profile: ${profile.style} style, ${profile.bodyType} body type. 
         Current Weather: ${weather}.
@@ -193,7 +193,7 @@ export const analyzeProductImageCompatibility = async (
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.5-flash-lite",
       contents: [
         {
           parts: [
