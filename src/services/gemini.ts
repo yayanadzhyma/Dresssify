@@ -82,32 +82,25 @@ const generateGuessedWeather = (location: string) => {
 };
 
 export const getWeather = async (location: string): Promise<{ temp: string; condition: string; note: string }> => {
-  try {
-    return await withRetry(async () => {
-      const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash-lite",
-        contents: `Get the current weather for ${location} based on Google Weather information. Return a JSON object with: temp (e.g. "18°C"), condition (e.g. "Sunny"), note (a short stylist note like "Perfect for light layers").`,
-        config: {
-          tools: [{ googleSearch: {} }],
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: Type.OBJECT,
-            properties: {
-              temp: { type: Type.STRING },
-              condition: { type: Type.STRING },
-              note: { type: Type.STRING }
-            },
-            required: ["temp", "condition", "note"]
-          }
-        }
-      });
+    try {
+        return await withRetry(async () => {
+            const response = await ai.models.generateContent({
+                model: "gemini-2.5-flash-lite",
+                contents: `Get the current weather for ${location} based on Google Weather information. Return ONLY a JSON object with: temp (e.g. "18°C"), condition (e.g. "Sunny"), note (a short stylist note like "Perfect for light layers"). No markdown, no explanation, just the JSON.`,
+                config: {
+                    tools: [{ googleSearch: {} }],
+                }
+            });
 
-      return JSON.parse(response.text || JSON.stringify(generateGuessedWeather(location)));
-    });
-  } catch (error) {
-    console.warn("Weather API failed, using hidden guess:", error);
-    return generateGuessedWeather(location);
-  }
+            const text = response.text || '';
+            const jsonMatch = text.match(/\{[\s\S]*\}/);
+            if (!jsonMatch) throw new Error('No JSON found in response');
+            return JSON.parse(jsonMatch[0]);
+        });
+    } catch (error) {
+        console.warn("Weather API failed, using hidden guess:", error);
+        return generateGuessedWeather(location);
+    }
 };
 
 export const suggestOutfits = async (
